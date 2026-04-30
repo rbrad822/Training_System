@@ -1,48 +1,87 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#05060d"/>
-      <stop offset="45%" stop-color="#0b1740"/>
-      <stop offset="100%" stop-color="#2a0730"/>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#16101a"/>
+      <stop offset="55%" stop-color="#07070d"/>
+      <stop offset="100%" stop-color="#020204"/>
+    </radialGradient>
+
+    <linearGradient id="blood" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff4da6"/>
+      <stop offset="45%" stop-color="#ff1f6d"/>
+      <stop offset="100%" stop-color="#7b0d2e"/>
     </linearGradient>
 
-    <linearGradient id="akaza" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#00eaff"/>
-      <stop offset="45%" stop-color="#1f6fff"/>
-      <stop offset="100%" stop-color="#ff4da6"/>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7cc7ff"/>
+      <stop offset="100%" stop-color="#1f6fff"/>
     </linearGradient>
 
     <filter id="glow">
-      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feGaussianBlur stdDeviation="8" result="blur"/>
       <feMerge>
         <feMergeNode in="blur"/>
         <feMergeNode in="SourceGraphic"/>
       </feMerge>
     </filter>
+
+    <pattern id="waves" width="48" height="24" patternUnits="userSpaceOnUse">
+      <path d="M0 24 C12 0 36 0 48 24" fill="none" stroke="#ffffff" stroke-opacity="0.045" stroke-width="3"/>
+    </pattern>
   </defs>
 
-  <rect width="512" height="512" rx="108" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="104" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="104" fill="url(#waves)"/>
 
-  <circle cx="256" cy="256" r="184" fill="none" stroke="url(#akaza)" stroke-width="16" opacity="0.95" filter="url(#glow)"/>
-  <circle cx="256" cy="256" r="132" fill="none" stroke="#00eaff" stroke-width="6" opacity="0.55"/>
-  <circle cx="256" cy="256" r="88" fill="none" stroke="#ff4da6" stroke-width="6" opacity="0.55"/>
+  <circle cx="256" cy="256" r="178" fill="none" stroke="url(#blood)" stroke-width="18" filter="url(#glow)"/>
+  <circle cx="256" cy="256" r="128" fill="none" stroke="url(#blue)" stroke-width="7" opacity="0.75"/>
+  <circle cx="256" cy="256" r="78" fill="none" stroke="#ff4da6" stroke-width="5" opacity="0.8"/>
 
-  <path d="M256 83 C281 136 319 165 379 181 C327 208 294 246 281 307 C254 256 218 222 158 204 C211 179 241 139 256 83Z"
-        fill="url(#akaza)" opacity="0.95" filter="url(#glow)"/>
+  <g filter="url(#glow)">
+    <path d="M256 83
+      C286 134 337 151 390 169
+      C342 196 313 232 300 292
+      C285 353 237 385 186 408
+      C211 356 209 306 175 260
+      C137 208 165 147 221 128
+      C236 123 248 107 256 83Z"
+      fill="url(#blood)" opacity="0.95"/>
 
-  <path d="M256 145 L292 235 H258 L314 370 L219 255 H253 L198 145Z"
-        fill="#eaf8ff" opacity="0.96"/>
+    <path d="M256 121
+      C274 164 308 192 349 207
+      C310 224 284 252 274 300
+      C262 351 225 374 190 390
+      C209 349 204 310 178 276
+      C151 240 166 191 207 171
+      C231 159 246 141 256 121Z"
+      fill="#08080f"/>
+  </g>
 
-  <path d="M116 256 H396 M256 116 V396"
-        stroke="url(#akaza)" stroke-width="8" stroke-linecap="round" opacity="0.75"/>
+  <text x="256" y="235"
+    text-anchor="middle"
+    font-size="72"
+    font-family="serif"
+    font-weight="900"
+    fill="#ff4da6"
+    filter="url(#glow)">血</text>
 
-  <text x="256" y="454"
-        text-anchor="middle"
-        font-size="44"
-        font-family="Arial, sans-serif"
-        font-weight="900"
-        fill="#eaf8ff"
-        letter-spacing="4">
-    ATS
-  </text>
+  <text x="256" y="313"
+    text-anchor="middle"
+    font-size="72"
+    font-family="serif"
+    font-weight="900"
+    fill="#7cc7ff"
+    filter="url(#glow)">鬼</text>
+
+  <path d="M108 256 H154 M358 256 H404 M256 108 V154 M256 358 V404"
+    stroke="url(#blue)"
+    stroke-width="8"
+    stroke-linecap="round"
+    opacity="0.85"/>
+
+  <rect x="18" y="18" width="476" height="476" rx="92"
+    fill="none"
+    stroke="#ff4da6"
+    stroke-width="4"
+    opacity="0.55"/>
 </svg>
