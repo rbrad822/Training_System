@@ -1,0 +1,19 @@
+{
+  "name": "Akaza Training System",
+  "short_name": "Training",
+  "description": "Workout tracker with XP, rewards, streaks, and progress.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#05060d",
+  "theme_color": "#05060d",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
