@@ -337,6 +337,15 @@ a{color:var(--blue)}
 
 <main>
 <section id="home" class="page active">
+
+<div class="card">
+  <h2 class="section-title blue-title">Daily Motivation</h2>
+  <p id="dailyQuote" class="muted">Loading quote...</p>
+  <p id="dailyQuoteAuthor" class="small"></p>
+  <button class="secondary" onclick="loadMotivationalQuote()">New Quote</button>
+  <p class="small">Quotes provided by ZenQuotes.io</p>
+</div>
+  
   <div class="grid">
     <div class="card stat-card">
       <div class="stat-icon">🔥</div>
@@ -1000,6 +1009,27 @@ function render(){
   renderLog();
 }
 
+  async function loadMotivationalQuote(){
+  const quoteBox = document.getElementById("dailyQuote");
+  const authorBox = document.getElementById("dailyQuoteAuthor");
+
+  if (!quoteBox || !authorBox) return;
+
+  quoteBox.textContent = "Loading quote...";
+  authorBox.textContent = "";
+
+  try {
+    const response = await fetch("https://zenquotes.io/api/random");
+    const result = await response.json();
+
+    quoteBox.textContent = `"${result[0].q}"`;
+    authorBox.textContent = `— ${result[0].a}`;
+  } catch {
+    quoteBox.textContent = "Strength grows through discipline.";
+    authorBox.textContent = "— Training System";
+  }
+}
+
 if("serviceWorker" in navigator){
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./service-worker.js").catch(() => {});
@@ -1008,6 +1038,7 @@ if("serviceWorker" in navigator){
 
 saveData();
 render();
+loadMotivationalQuote();
 </script>
 </body>
 </html>
