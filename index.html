@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Akaza Training System</title>
+
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg">
+<meta name="theme-color" content="#07070d">
+
+<style>
+:root{
+  --bg:#050507;
+  --panel:#090d14;
+  --panel2:#10141f;
+  --line:#343640;
+  --text:#f4f1ea;
+  --muted:#a6a0a0;
+  --pink:#ff1f6d;
+  --pink2:#ff4da6;
+  --blue:#4d9cff;
+  --green:#37ff80;
+  --red:#ff3158;
+  --gold:#f6c46b;
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Georgia, "Times New Roman", serif;
+  background:
+    radial-gradient(circle at top right,rgba(255,31,109,.18),transparent 30%),
+    radial-gradient(circle at top left,rgba(77,156,255,.12),transparent 28%),
+    repeating-radial-gradient(circle at 20% 10%,rgba(255,255,255,.025) 0 2px,transparent 2px 18px),
+    linear-gradient(180deg,#030305,#080b12 60%,#030305);
+  color:var(--text);
+  min-height:100vh;
+}
+
+header{
+  position:relative;
+  padding:42px 18px 32px;
+  text-align:center;
+  overflow:hidden;
+  border-bottom:1px solid rgba(255,31,109,.35);
+}
+
+header::before{
+  content:"狩窩座";
+  position:absolute;
+  left:28px;
+  top:35px;
+  writing-mode:vertical-rl;
+  color:var(--pink);
+  font-size:2.5rem;
+  opacity:.9;
+  text-shadow:0 0 18px rgba(255,31,109,.8);
+}
+
+header::after{
+  content:"";
+  position:absolute;
+  right:-90px;
+  top:-80px;
+  width:280px;
+  height:280px;
+  border:18px solid rgba(255,31,109,.75);
+  border-radius:50%;
+  filter:blur(.3px);
+  box-shadow:0 0 45px rgba(255,31,109,.55);
+}
+
+.crest{
+  width:72px;
+  height:72px;
+  margin:0 auto 10px;
+  border:3px solid var(--pink);
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  color:var(--pink);
+  font-size:1.6rem;
+  box-shadow:0 0 28px rgba(255,31,109,.6);
+}
+
+h1{
+  margin:0;
+  color:var(--pink);
+  font-size:clamp(2.8rem,8vw,6.5rem);
+  letter-spacing:8px;
+  font-weight:900;
+  text-shadow:0 0 25px rgba(255,31,109,.75);
+}
+
+.subtitle{
+  margin:4px 0 0;
+  font-size:clamp(1.1rem,3vw,2rem);
+  letter-spacing:8px;
+  text-transform:uppercase;
+}
+
+.tagline{
+  color:var(--muted);
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+
+nav{
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  flex-wrap:wrap;
+  padding:12px;
+  background:rgba(3,3,6,.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,31,109,.25);
+}
+
+button{
+  border:1px solid rgba(255,31,109,.75);
+  color:var(--text);
+  background:linear-gradient(135deg,rgba(255,31,109,.22),rgba(77,156,255,.16));
+  padding:11px 15px;
+  border-radius:2px;
+  font-weight:800;
+  cursor:pointer;
+  letter-spacing:.4px;
+  box-shadow:0 0 14px rgba(255,31,109,.16);
+}
+
+button:hover{background:rgba(255,31,109,.28)}
+button:disabled{opacity:.4;cursor:not-allowed}
+button.danger{border-color:#ff3158;background:rgba(255,49,88,.25)}
+button.secondary{border-color:rgba(77,156,255,.55);background:rgba(77,156,255,.12)}
+
+main{
+  max-width:1180px;
+  margin:auto;
+  padding:18px;
+}
+
+.page{display:none}
+.page.active{display:block}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:16px;
+}
+
+.card{
+  position:relative;
+  background:
+    linear-gradient(180deg,rgba(16,20,31,.96),rgba(6,9,15,.96));
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:4px;
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:0 0 30px rgba(0,0,0,.45);
+}
+
+.card::before,
+.card::after{
+  content:"";
+  position:absolute;
+  width:22px;
+  height:22px;
+  border-color:rgba(255,31,109,.75);
+  border-style:solid;
+  pointer-events:none;
+}
+
+.card::before{
+  left:7px;
+  top:7px;
+  border-width:2px 0 0 2px;
+}
+
+.card::after{
+  right:7px;
+  bottom:7px;
+  border-width:0 2px 2px 0;
+}
+
+.section-title{
+  margin-top:0;
+  color:var(--pink);
+  text-transform:uppercase;
+  letter-spacing:2px;
+}
+
+.blue-title{color:var(--blue)}
+
+.muted,.small{color:var(--muted)}
+.small{font-size:.9rem}
+
+.stat-card{
+  text-align:center;
+  min-height:160px;
+}
+
+.stat-icon{
+  font-size:2.4rem;
+  margin-bottom:6px;
+}
+
+.stat-number{
+  font-size:3.6rem;
+  color:var(--pink);
+  text-shadow:0 0 18px rgba(255,31,109,.65);
+}
+
+.stat-number.blue{
+  color:var(--blue);
+  text-shadow:0 0 18px rgba(77,156,255,.65);
+}
+
+.blood-circle{
+  width:220px;
+  height:220px;
+  margin:10px auto 16px;
+  border-radius:50%;
+  border:5px solid rgba(255,31,109,.9);
+  display:grid;
+  place-items:center;
+  color:var(--pink);
+  font-size:3rem;
+  box-shadow:
+    0 0 35px rgba(255,31,109,.65),
+    inset 0 0 35px rgba(255,31,109,.22);
+  background:radial-gradient(circle,rgba(255,31,109,.18),transparent 62%);
+}
+
+.reward-flower{
+  font-size:5.3rem;
+  filter:drop-shadow(0 0 18px rgba(255,31,109,.75));
+}
+
+.exercise{
+  background:rgba(5,7,13,.92);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:7px;
+  padding:13px;
+  margin:10px 0;
+}
+
+.exercise.checked{
+  border-color:rgba(55,255,128,.65);
+  background:rgba(55,255,128,.08);
+}
+
+.exercise label{
+  display:flex;
+  gap:10px;
+  cursor:pointer;
+}
+
+.exercise input[type="checkbox"]{
+  width:auto;
+  margin-top:4px;
+  accent-color:var(--pink);
+}
+
+input,textarea,select{
+  width:100%;
+  padding:12px;
+  border-radius:4px;
+  border:1px solid rgba(255,255,255,.18);
+  background:#080b12;
+  color:var(--text);
+  margin-top:6px;
+  font:inherit;
+}
+
+textarea{min-height:95px}
+label{display:block;margin-top:12px;color:var(--muted)}
+
+.actions{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-top:14px;
+}
+
+a{color:var(--blue)}
+
+.badge{
+  display:inline-block;
+  padding:5px 9px;
+  border-radius:999px;
+  margin:3px;
+  font-size:.78rem;
+  border:1px solid rgba(255,255,255,.2);
+}
+
+.day-badge{color:var(--pink);border-color:rgba(255,31,109,.65)}
+.common{background:#334155}
+.rare{background:#1d4ed8}
+.epic{background:#7e22ce}
+.legendary{background:#ca8a04;color:#111}
+
+.bottom-nav{
+  display:none;
+}
+
+@media(max-width:720px){
+  header::before{display:none}
+  header::after{width:190px;height:190px;right:-90px}
+  h1{letter-spacing:4px}
+  .subtitle{letter-spacing:4px}
+  nav button{font-size:.84rem;padding:9px 10px}
+}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="crest">上弦</div>
+  <h1>AKAZA</h1>
+  <div class="subtitle">Training System</div>
+  <p class="tagline">Demon Blood Art Training Journal</p>
+</header>
+
+<nav>
+  <button onclick="showPage('home')">Home</button>
+  <button onclick="showTodayTraining()">Today’s Training</button>
+  <button onclick="showPage('forms')">Blood Art Forms</button>
+  <button onclick="showPage('rewards')">Recovery Rewards</button>
+  <button onclick="showPage('log')">Training Log</button>
+</nav>
+
+<main>
+<section id="home" class="page active">
+  <div class="grid">
+    <div class="card stat-card">
+      <div class="stat-icon">🔥</div>
+      <h3>Current Streak</h3>
+      <div class="stat-number" id="homeStreak">0</div>
+      <p class="muted">Keep it unwavering.</p>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-icon">🌸</div>
+      <h3>Total Sessions</h3>
+      <div class="stat-number blue" id="homeSessions">0</div>
+      <p class="muted">Keep training.</p>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-icon">🩸</div>
+      <h3>Forms Mastered</h3>
+      <div class="stat-number" id="homeForms">0</div>
+      <p class="muted">Strength through perfection.</p>
+    </div>
+
+    <div class="card stat-card">
+      <div class="stat-icon">👹</div>
+      <h3>Last Training</h3>
+      <div class="stat-number blue" style="font-size:2.4rem" id="homeLastTraining">None</div>
+      <p class="muted">Never stop improving.</p>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2 class="section-title">Today’s Training</h2>
+      <div class="grid">
+        <div>
+          <div class="blood-circle">血鬼術</div>
+        </div>
+        <div>
+          <p class="section-title">Today’s Blood Art Form</p>
+          <h2 id="homeTodayName">No form available</h2>
+          <p class="muted" id="homeTodayBenefits"></p>
+          <div class="actions">
+            <button onclick="showTodayTraining()">Begin Today’s Form</button>
+          </div>
+          <p class="small">Train with focus. Become stronger.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="text-align:center">
+      <h2 class="section-title blue-title">Recovery Reward</h2>
+      <div class="reward-flower">🌸</div>
+      <p class="muted">Latest Reward</p>
+      <h2 id="homeReward">Complete training to earn a reward.</h2>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h2 class="section-title">Blood Art Forms</h2>
+      <div id="homeFormsList"></div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title blue-title">Training Log</h2>
+      <div id="homeLogList"></div>
+    </div>
+  </div>
+</section>
+
+<section id="today" class="page">
+  <div class="card">
+    <h2 class="section-title" id="todayTitle">Today’s Training</h2>
+    <p class="muted" id="todayBenefits"></p>
+    <p><strong>Assigned Day:</strong> <span id="todayDay"></span></p>
+    <a id="todayVideo" href="#" target="_blank">Watch Proper Form Overview</a>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">Exercise Checklist</h2>
+    <div id="todayChecklist"></div>
+
+    <div class="actions">
+      <button id="completeTodayBtn" onclick="completeTodayTraining()">Complete Training Form</button>
+      <button class="secondary" onclick="clearTodayChecks()">Clear Checks</button>
+    </div>
+
+    <p class="small" id="checkProgressText"></p>
+  </div>
+</section>
+
+<section id="forms" class="page">
+  <div class="card">
+    <h2 class="section-title">Add / Edit Blood Art Form</h2>
+    <input id="formId" type="hidden">
+
+    <label>Assign to Day</label>
+    <select id="formDay">
+      <option value="1">Day 1</option>
+      <option value="2">Day 2</option>
+      <option value="3">Day 3</option>
+      <option value="4">Day 4</option>
+      <option value="5">Day 5</option>
+      <option value="6">Day 6</option>
+      <option value="7">Day 7</option>
+    </select>
+
+    <label>Form Name</label>
+    <input id="formName" placeholder="Destructive Death: Compass Needle">
+
+    <label>Exercises</label>
+    <textarea id="formExercises" placeholder="Incline Push-ups - 3 sets | 8–12 reps"></textarea>
+
+    <label>Benefits</label>
+    <textarea id="formBenefits"></textarea>
+
+    <label>Video Link</label>
+    <input id="formVideo">
+
+    <div class="actions">
+      <button onclick="saveForm()">Save Form</button>
+      <button class="secondary" onclick="clearForm()">Clear</button>
+    </div>
+  </div>
+
+  <h2 class="section-title">Blood Art Form Library</h2>
+  <div id="formsList"></div>
+</section>
+
+<section id="rewards" class="page">
+  <div class="card">
+    <h2 class="section-title">Add / Edit Recovery Reward</h2>
+    <input id="rewardId" type="hidden">
+
+    <label>Reward Name</label>
+    <input id="rewardName">
+
+    <label>Description</label>
+    <textarea id="rewardDescription"></textarea>
+
+    <label>Rarity</label>
+    <select id="rewardRarity">
+      <option value="common">Common - 60%</option>
+      <option value="rare">Rare - 25%</option>
+      <option value="epic">Epic - 12%</option>
+      <option value="legendary">Legendary - 3%</option>
+    </select>
+
+    <div class="actions">
+      <button onclick="saveReward()">Save Reward</button>
+      <button class="secondary" onclick="clearReward()">Clear</button>
+    </div>
+  </div>
+
+  <h2 class="section-title blue-title">Recovery Reward Pool</h2>
+  <div id="rewardList" class="grid"></div>
+</section>
+
+<section id="log" class="page">
+  <div class="card">
+    <h2 class="section-title blue-title">Training Log</h2>
+    <div id="trainingLog"></div>
+    <div class="actions">
+      <button class="danger" onclick="resetProgress()">Reset Training Log</button>
+      <button class="danger" onclick="factoryReset()">Factory Reset Everything</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+const STORAGE_KEY = "akaza_blood_art_training_v1";
+
+const rarityWeights = {
+  common: 60,
+  rare: 25,
+  epic: 12,
+  legendary: 3
+};
+
+const defaultData = {
+  sessions: 0,
+  streak: 0,
+  lastTrainingDate: "",
+  latestReward: "",
+  logs: [],
+  todayChecks: {},
+  forms: [
+    {
+      id: crypto.randomUUID(),
+      day: 1,
+      name: "Destructive Death: Upper Body Strength + Core",
+      exercises:
+`Incline Push-ups - 3 sets | 8–12 reps | RPE 6–7
+Dumbbell Floor Press - 3 sets | 8–12 reps | RPE 6–7
+Resistance Band Rows / Machine Rows - 3 sets | 10–15 reps | RPE 6–7
+Dumbbell Shoulder Press Seated - 3 sets | 8–12 reps | RPE 6
+Dumbbell Lateral Raises - 2–3 sets | 12–15 reps | RPE 6
+Plank - 3 sets | 20–40 sec | RPE 6
+Dead Bug - 2–3 sets | 8–12 reps | RPE 6`,
+      benefits: "Upper body strength, shoulder stability, chest and triceps development, back strength, and core control with low joint stress.",
+      video: "https://www.youtube.com/results?search_query=upper+body+strength+core+low+joint+stress+workout"
+    },
+    {
+      id: crypto.randomUUID(),
+      day: 2,
+      name: "Destructive Death: Knee-Friendly Lower Body",
+      exercises:
+`Box Squats - 3 sets | 8–12 reps | RPE 6
+Romanian Deadlifts - 3 sets | 8–12 reps | RPE 6–7
+Glute Bridges / Hip Thrusts - 3 sets | 10–15 reps | RPE 6–7
+Step-ups Low Height - 2–3 sets | 8–10 reps/leg | RPE 6
+Hamstring Curls - 2–3 sets | 10–15 reps | RPE 6
+Calf Raises - 3 sets | 10–15 reps | RPE 6
+Incline Walking / Bike / Elliptical - 15–25 min | steady pace`,
+      benefits: "Builds legs, glutes, hamstrings, calves, and conditioning while staying knee-friendly.",
+      video: "https://www.youtube.com/results?search_query=knee+friendly+lower+body+workout"
+    },
+    {
+      id: crypto.randomUUID(),
+      day: 3,
+      name: "Destructive Death: Full Body Spartan Prep",
+      exercises:
+`Assisted Pull-ups / Band Pull-downs - 3 sets | 6–10 reps | RPE 6–7
+Dumbbell Goblet Squat - 3 sets | 8–12 reps | RPE 6
+Farmer’s Carry - 3 rounds | 20–40 sec | RPE 6–7
+Dumbbell Rows - 3 sets | 8–12 reps | RPE 6–7
+Push-ups Progression - 3 sets | 6–10 reps | RPE 6–7
+Battle Ropes / Shadow Conditioning - 3 rounds | 20–30 sec | RPE 7
+Hanging Knee Raises / Captain’s Chair - 2–3 sets | 8–12 reps | RPE 6`,
+      benefits: "Full-body strength, grip, core, conditioning, and obstacle-race readiness.",
+      video: "https://www.youtube.com/results?search_query=full+body+functional+spartan+race+prep+workout"
+    }
+  ],
+  rewards: [
+    { id: crypto.randomUUID(), name: "Wisteria Essence", description: "A calm recovery ritual after training.", rarity: "common" },
+    { id: crypto.randomUUID(), name: "Recovery Meal", description: "A strong meal after a completed session.", rarity: "common" },
+    { id: crypto.randomUUID(), name: "New Training Playlist", description: "Refresh your battle music.", rarity: "rare" },
+    { id: crypto.randomUUID(), name: "Gym Gear Upgrade", description: "Buy a small piece of training gear.", rarity: "epic" },
+    { id: crypto.randomUUID(), name: "Legendary Rest Night", description: "Full recovery night with zero guilt.", rarity: "legendary" }
+  ]
+};
+
+let data = loadData();
+
+function loadData(){
+  const saved = localStorage.getItem(STORAGE_KEY);
+
+  if(!saved) return structuredClone(defaultData);
+
+  try{
+    const parsed = JSON.parse(saved);
+    return {
+      ...structuredClone(defaultData),
+      ...parsed,
+      forms: Array.isArray(parsed.forms) && parsed.forms.length ? parsed.forms : structuredClone(defaultData.forms),
+      rewards: Array.isArray(parsed.rewards) && parsed.rewards.length ? parsed.rewards : structuredClone(defaultData.rewards),
+      logs: Array.isArray(parsed.logs) ? parsed.logs : [],
+      todayChecks: parsed.todayChecks || {}
+    };
+  }catch{
+    return structuredClone(defaultData);
+  }
+}
+
+function saveData(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function showPage(id){
+  document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  render();
+}
+
+function showTodayTraining(){
+  showPage("today");
+}
+
+function todayKey(){
+  return new Date().toISOString().slice(0,10);
+}
+
+function yesterdayKey(){
+  const date = new Date();
+  date.setDate(date.getDate() - 1);
+  return date.toISOString().slice(0,10);
+}
+
+function getCurrentTrainingDay(){
+  const start = new Date(new Date().getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((new Date() - start) / 86400000);
+  return ((dayOfYear - 1) % 3) + 1;
+}
+
+function getTodayForm(){
+  const day = getCurrentTrainingDay();
+  return data.forms.find(form => Number(form.day) === day) || data.forms[0] || null;
+}
+
+function getExerciseList(form){
+  if(!form || !form.exercises) return [];
+
+  if(Array.isArray(form.exercises)){
+    return form.exercises.map(item => typeof item === "string" ? item : `${item.name || ""} ${item.details || ""}`.trim()).filter(Boolean);
+  }
+
+  return String(form.exercises)
+    .split("\n")
+    .map(item => item.trim())
+    .filter(Boolean);
+}
+
+function getTodayCheckKey(){
+  const form = getTodayForm();
+  return form ? `${todayKey()}-${form.id}` : todayKey();
+}
+
+function getTodayChecks(){
+  return data.todayChecks[getTodayCheckKey()] || [];
+}
+
+function setTodayChecks(checks){
+  data.todayChecks[getTodayCheckKey()] = checks;
+  saveData();
+}
+
+function toggleExercise(index){
+  const checks = getTodayChecks();
+  checks[index] = !checks[index];
+  setTodayChecks(checks);
+  renderToday();
+}
+
+function clearTodayChecks(){
+  setTodayChecks([]);
+  renderToday();
+}
+
+function getRandomReward(){
+  if(!data.rewards.length) return null;
+
+  const pool = [];
+
+  data.rewards.forEach(reward => {
+    const weight = rarityWeights[reward.rarity] || 1;
+    for(let i = 0; i < weight; i++) pool.push(reward);
+  });
+
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function completeTodayTraining(){
+  const form = getTodayForm();
+  if(!form) return;
+
+  const exercises = getExerciseList(form);
+  const checks = getTodayChecks();
+  const completedCount = checks.filter(Boolean).length;
+
+  if(completedCount < exercises.length){
+    alert(`Complete every exercise first. ${completedCount}/${exercises.length} checked.`);
+    return;
+  }
+
+  completeForm(form.id);
+}
+
+function completeForm(id){
+  const form = data.forms.find(item => item.id === id);
+  if(!form) return;
+
+  const today = todayKey();
+  const alreadyDone = data.logs.some(log => log.formId === id && log.date === today);
+
+  if(alreadyDone){
+    alert("You already completed this form today.");
+    return;
+  }
+
+  data.streak = data.lastTrainingDate === yesterdayKey() ? data.streak + 1 : 1;
+  data.lastTrainingDate = today;
+  data.sessions++;
+
+  const reward = getRandomReward();
+
+  data.latestReward = reward
+    ? `${reward.name} [${reward.rarity.toUpperCase()}] - ${reward.description}`
+    : "No recovery rewards available.";
+
+  data.logs.unshift({
+    id: crypto.randomUUID(),
+    formId: form.id,
+    formName: form.name,
+    formDay: form.day,
+    date: today,
+    reward: data.latestReward,
+    completedExercises: getExerciseList(form)
+  });
+
+  saveData();
+  render();
+  alert(`Training complete. Recovery reward earned: ${data.latestReward}`);
+  showPage("log");
+}
+
+function saveForm(){
+  const form = {
+    id: formId.value || crypto.randomUUID(),
+    day: Number(formDay.value),
+    name: formName.value.trim(),
+    exercises: formExercises.value.trim(),
+    benefits: formBenefits.value.trim(),
+    video: formVideo.value.trim()
+  };
+
+  if(!form.name || !form.exercises || !form.benefits || !form.video){
+    alert("Fill in all form fields.");
+    return;
+  }
+
+  if(formId.value){
+    data.forms = data.forms.map(item => item.id === form.id ? form : item);
+  }else{
+    data.forms.push(form);
+  }
+
+  saveData();
+  clearForm();
+  render();
+}
+
+function editForm(id){
+  const form = data.forms.find(item => item.id === id);
+  if(!form) return;
+
+  formId.value = form.id;
+  formDay.value = form.day || 1;
+  formName.value = form.name || "";
+  formExercises.value = getExerciseList(form).join("\n");
+  formBenefits.value = form.benefits || "";
+  formVideo.value = form.video || "";
+
+  showPage("forms");
+  scrollTo({top:0,behavior:"smooth"});
+}
+
+function deleteForm(id){
+  if(!confirm("Delete this Blood Art Form?")) return;
+  data.forms = data.forms.filter(item => item.id !== id);
+  saveData();
+  render();
+}
+
+function clearForm(){
+  formId.value = "";
+  formDay.value = 1;
+  formName.value = "";
+  formExercises.value = "";
+  formBenefits.value = "";
+  formVideo.value = "";
+}
+
+function saveReward(){
+  const reward = {
+    id: rewardId.value || crypto.randomUUID(),
+    name: rewardName.value.trim(),
+    description: rewardDescription.value.trim(),
+    rarity: rewardRarity.value
+  };
+
+  if(!reward.name || !reward.description){
+    alert("Fill in all reward fields.");
+    return;
+  }
+
+  if(rewardId.value){
+    data.rewards = data.rewards.map(item => item.id === reward.id ? reward : item);
+  }else{
+    data.rewards.push(reward);
+  }
+
+  saveData();
+  clearReward();
+  render();
+}
+
+function editReward(id){
+  const reward = data.rewards.find(item => item.id === id);
+  if(!reward) return;
+
+  rewardId.value = reward.id;
+  rewardName.value = reward.name;
+  rewardDescription.value = reward.description;
+  rewardRarity.value = reward.rarity;
+
+  showPage("rewards");
+  scrollTo({top:0,behavior:"smooth"});
+}
+
+function deleteReward(id){
+  if(!confirm("Delete this reward?")) return;
+  data.rewards = data.rewards.filter(item => item.id !== id);
+  saveData();
+  render();
+}
+
+function clearReward(){
+  rewardId.value = "";
+  rewardName.value = "";
+  rewardDescription.value = "";
+  rewardRarity.value = "common";
+}
+
+function resetProgress(){
+  if(!confirm("Reset sessions, streak, log, and today’s checks? Forms and rewards stay.")) return;
+
+  data.sessions = 0;
+  data.streak = 0;
+  data.lastTrainingDate = "";
+  data.latestReward = "";
+  data.logs = [];
+  data.todayChecks = {};
+
+  saveData();
+  render();
+}
+
+function factoryReset(){
+  if(!confirm("Factory reset everything? This restores the default forms and rewards.")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  data = structuredClone(defaultData);
+  saveData();
+  render();
+  showPage("home");
+}
+
+function renderHome(){
+  const todayForm = getTodayForm();
+
+  homeStreak.textContent = data.streak;
+  homeSessions.textContent = data.sessions;
+  homeForms.textContent = data.forms.length;
+  homeLastTraining.textContent = data.lastTrainingDate || "None";
+  homeReward.textContent = data.latestReward || "Complete training to earn a reward.";
+
+  if(todayForm){
+    homeTodayName.textContent = todayForm.name;
+    homeTodayBenefits.textContent = todayForm.benefits;
+  }else{
+    homeTodayName.textContent = "No form available";
+    homeTodayBenefits.textContent = "Add a Blood Art Form to begin.";
+  }
+
+  homeFormsList.innerHTML = data.forms.slice(0,4).map(form => `
+    <div class="exercise">
+      <span class="badge day-badge">Day ${form.day}</span>
+      <strong>${form.name}</strong>
+      <p class="small">${form.id === todayForm?.id ? "Today" : "In Rotation"}</p>
+    </div>
+  `).join("");
+
+  homeLogList.innerHTML = data.logs.length ? data.logs.slice(0,4).map(log => `
+    <div class="exercise">
+      <strong>${log.formName}</strong><br>
+      <span class="small">${log.date}</span>
+      <span style="float:right;color:var(--green)">Completed ✔</span>
+    </div>
+  `).join("") : `<p class="muted">No completed training yet.</p>`;
+}
+
+function renderToday(){
+  const form = getTodayForm();
+
+  if(!form){
+    todayTitle.textContent = "No Training Available";
+    todayBenefits.textContent = "Add a Blood Art Form first.";
+    todayDay.textContent = "None";
+    todayVideo.href = "#";
+    todayChecklist.innerHTML = "";
+    completeTodayBtn.disabled = true;
+    checkProgressText.textContent = "";
+    return;
+  }
+
+  const exercises = getExerciseList(form);
+  const checks = getTodayChecks();
+  const completedCount = checks.filter(Boolean).length;
+  const alreadyDone = data.logs.some(log => log.formId === form.id && log.date === todayKey());
+
+  todayTitle.textContent = form.name;
+  todayBenefits.textContent = form.benefits;
+  todayDay.textContent = `Day ${form.day}`;
+  todayVideo.href = form.video;
+
+  todayChecklist.innerHTML = exercises.map((exercise, index) => `
+    <div class="exercise ${checks[index] ? "checked" : ""}">
+      <label>
+        <input 
+          type="checkbox"
+          ${checks[index] ? "checked" : ""}
+          ${alreadyDone ? "disabled" : ""}
+          onchange="toggleExercise(${index})"
+        >
+        <span>${exercise}</span>
+      </label>
+    </div>
+  `).join("");
+
+  completeTodayBtn.disabled = alreadyDone || completedCount < exercises.length;
+  completeTodayBtn.textContent = alreadyDone ? "Training Already Completed" : "Complete Training Form";
+  checkProgressText.textContent = `${completedCount}/${exercises.length} exercises checked.`;
+}
+
+function renderForms(){
+  formsList.innerHTML = data.forms.map(form => `
+    <div class="card">
+      <span class="badge day-badge">Day ${form.day}</span>
+      <h3>${form.name}</h3>
+      <p class="muted">${form.benefits}</p>
+      <div class="exercise">${getExerciseList(form).join("<br>")}</div>
+      <a href="${form.video}" target="_blank">Watch Proper Form</a>
+      <div class="actions">
+        <button onclick="editForm('${form.id}')">Edit</button>
+        <button class="danger" onclick="deleteForm('${form.id}')">Delete</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderRewards(){
+  rewardList.innerHTML = data.rewards.map(reward => `
+    <div class="card">
+      <span class="badge ${reward.rarity}">${reward.rarity.toUpperCase()}</span>
+      <h3>${reward.name}</h3>
+      <p class="muted">${reward.description}</p>
+      <div class="actions">
+        <button onclick="editReward('${reward.id}')">Edit</button>
+        <button class="danger" onclick="deleteReward('${reward.id}')">Delete</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderLog(){
+  trainingLog.innerHTML = data.logs.length ? data.logs.map(log => `
+    <div class="exercise">
+      <strong>${log.formName}</strong><br>
+      <span class="small">Day ${log.formDay} | ${log.date}</span><br>
+      <span>${log.reward}</span>
+      <p class="small"><strong>Completed Exercises:</strong><br>${log.completedExercises.join("<br>")}</p>
+    </div>
+  `).join("") : `<p class="muted">No completed training yet.</p>`;
+}
+
+function render(){
+  renderHome();
+  renderToday();
+  renderForms();
+  renderRewards();
+  renderLog();
+}
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js").catch(() => {});
+  });
+}
+
+saveData();
+render();
+</script>
+</body>
+</html>
