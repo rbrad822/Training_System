@@ -1,4 +1,4 @@
-const CACHE_NAME = "akaza-training-system-v1";
+const CACHE_NAME = "akaza-training-system-v2";
 
 const FILES_TO_CACHE = [
   "./",
