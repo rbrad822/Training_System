@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Akaza Training System</title>
 
 <link rel="manifest" href="manifest.json">
@@ -69,7 +69,6 @@ header::after{
   height:280px;
   border:18px solid rgba(255,31,109,.75);
   border-radius:50%;
-  filter:blur(.3px);
   box-shadow:0 0 45px rgba(255,31,109,.55);
 }
 
@@ -156,8 +155,7 @@ main{
 
 .card{
   position:relative;
-  background:
-    linear-gradient(180deg,rgba(16,20,31,.96),rgba(6,9,15,.96));
+  background:linear-gradient(180deg,rgba(16,20,31,.96),rgba(6,9,15,.96));
   border:1px solid rgba(255,255,255,.18);
   border-radius:4px;
   padding:18px;
@@ -305,8 +303,9 @@ a{color:var(--blue)}
 .epic{background:#7e22ce}
 .legendary{background:#ca8a04;color:#111}
 
-.bottom-nav{
-  display:none;
+#dailyQuote,
+#dailyQuoteAuthor{
+  transition:opacity .18s ease;
 }
 
 @media(max-width:720px){
@@ -338,13 +337,12 @@ a{color:var(--blue)}
 <main>
 <section id="home" class="page active">
 
-<div class="card">
-  <h2 class="section-title blue-title">Daily Motivation</h2>
-  <p id="dailyQuote" class="muted">Loading quote...</p>
-  <p id="dailyQuoteAuthor" class="small"></p>
-  <button class="secondary" onclick="loadMotivationalQuote()">New Quote</button>
-  <p class="small">Quotes provided by ZenQuotes.io</p>
-</div>
+  <div class="card">
+    <h2 class="section-title blue-title">Daily Motivation</h2>
+    <p id="dailyQuote" class="muted">Loading quote...</p>
+    <p id="dailyQuoteAuthor" class="small"></p>
+    <button class="secondary" onclick="loadMotivationalQuote()">New Quote</button>
+  </div>
   
   <div class="grid">
     <div class="card stat-card">
@@ -526,19 +524,27 @@ const rarityWeights = {
   legendary: 3
 };
 
-const defaultData = {
-  sessions: 0,
-  streak: 0,
-  lastTrainingDate: "",
-  latestReward: "",
-  logs: [],
-  todayChecks: {},
-  forms: [
-    {
-      id: crypto.randomUUID(),
-      day: 1,
-      name: "Destructive Death: Upper Body Strength + Core",
-      exercises:
+function uid(){
+  if(window.crypto && crypto.randomUUID){
+    return crypto.randomUUID();
+  }
+  return "id-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+}
+
+function createDefaultData(){
+  return {
+    sessions: 0,
+    streak: 0,
+    lastTrainingDate: "",
+    latestReward: "",
+    logs: [],
+    todayChecks: {},
+    forms: [
+      {
+        id: uid(),
+        day: 1,
+        name: "Destructive Death: Upper Body Strength + Core",
+        exercises:
 `Incline Push-ups - 3 sets | 8–12 reps | RPE 6–7
 Dumbbell Floor Press - 3 sets | 8–12 reps | RPE 6–7
 Resistance Band Rows / Machine Rows - 3 sets | 10–15 reps | RPE 6–7
@@ -546,14 +552,14 @@ Dumbbell Shoulder Press Seated - 3 sets | 8–12 reps | RPE 6
 Dumbbell Lateral Raises - 2–3 sets | 12–15 reps | RPE 6
 Plank - 3 sets | 20–40 sec | RPE 6
 Dead Bug - 2–3 sets | 8–12 reps | RPE 6`,
-      benefits: "Upper body strength, shoulder stability, chest and triceps development, back strength, and core control with low joint stress.",
-      video: "https://www.youtube.com/results?search_query=upper+body+strength+core+low+joint+stress+workout"
-    },
-    {
-      id: crypto.randomUUID(),
-      day: 2,
-      name: "Destructive Death: Knee-Friendly Lower Body",
-      exercises:
+        benefits: "Upper body strength, shoulder stability, chest and triceps development, back strength, and core control with low joint stress.",
+        video: "https://www.youtube.com/results?search_query=upper+body+strength+core+low+joint+stress+workout"
+      },
+      {
+        id: uid(),
+        day: 2,
+        name: "Destructive Death: Knee-Friendly Lower Body",
+        exercises:
 `Box Squats - 3 sets | 8–12 reps | RPE 6
 Romanian Deadlifts - 3 sets | 8–12 reps | RPE 6–7
 Glute Bridges / Hip Thrusts - 3 sets | 10–15 reps | RPE 6–7
@@ -561,14 +567,14 @@ Step-ups Low Height - 2–3 sets | 8–10 reps/leg | RPE 6
 Hamstring Curls - 2–3 sets | 10–15 reps | RPE 6
 Calf Raises - 3 sets | 10–15 reps | RPE 6
 Incline Walking / Bike / Elliptical - 15–25 min | steady pace`,
-      benefits: "Builds legs, glutes, hamstrings, calves, and conditioning while staying knee-friendly.",
-      video: "https://www.youtube.com/results?search_query=knee+friendly+lower+body+workout"
-    },
-    {
-      id: crypto.randomUUID(),
-      day: 3,
-      name: "Destructive Death: Full Body Spartan Prep",
-      exercises:
+        benefits: "Builds legs, glutes, hamstrings, calves, and conditioning while staying knee-friendly.",
+        video: "https://www.youtube.com/results?search_query=knee+friendly+lower+body+workout"
+      },
+      {
+        id: uid(),
+        day: 3,
+        name: "Destructive Death: Full Body Spartan Prep",
+        exercises:
 `Assisted Pull-ups / Band Pull-downs - 3 sets | 6–10 reps | RPE 6–7
 Dumbbell Goblet Squat - 3 sets | 8–12 reps | RPE 6
 Farmer’s Carry - 3 rounds | 20–40 sec | RPE 6–7
@@ -576,38 +582,41 @@ Dumbbell Rows - 3 sets | 8–12 reps | RPE 6–7
 Push-ups Progression - 3 sets | 6–10 reps | RPE 6–7
 Battle Ropes / Shadow Conditioning - 3 rounds | 20–30 sec | RPE 7
 Hanging Knee Raises / Captain’s Chair - 2–3 sets | 8–12 reps | RPE 6`,
-      benefits: "Full-body strength, grip, core, conditioning, and obstacle-race readiness.",
-      video: "https://www.youtube.com/results?search_query=full+body+functional+spartan+race+prep+workout"
-    }
-  ],
-  rewards: [
-    { id: crypto.randomUUID(), name: "Wisteria Essence", description: "A calm recovery ritual after training.", rarity: "common" },
-    { id: crypto.randomUUID(), name: "Recovery Meal", description: "A strong meal after a completed session.", rarity: "common" },
-    { id: crypto.randomUUID(), name: "New Training Playlist", description: "Refresh your battle music.", rarity: "rare" },
-    { id: crypto.randomUUID(), name: "Gym Gear Upgrade", description: "Buy a small piece of training gear.", rarity: "epic" },
-    { id: crypto.randomUUID(), name: "Legendary Rest Night", description: "Full recovery night with zero guilt.", rarity: "legendary" }
-  ]
-};
+        benefits: "Full-body strength, grip, core, conditioning, and obstacle-race readiness.",
+        video: "https://www.youtube.com/results?search_query=full+body+functional+spartan+race+prep+workout"
+      }
+    ],
+    rewards: [
+      { id: uid(), name: "Wisteria Essence", description: "A calm recovery ritual after training.", rarity: "common" },
+      { id: uid(), name: "Recovery Meal", description: "A strong meal after a completed session.", rarity: "common" },
+      { id: uid(), name: "New Training Playlist", description: "Refresh your battle music.", rarity: "rare" },
+      { id: uid(), name: "Gym Gear Upgrade", description: "Buy a small piece of training gear.", rarity: "epic" },
+      { id: uid(), name: "Legendary Rest Night", description: "Full recovery night with zero guilt.", rarity: "legendary" }
+    ]
+  };
+}
 
 let data = loadData();
 
 function loadData(){
+  const defaults = createDefaultData();
   const saved = localStorage.getItem(STORAGE_KEY);
 
-  if(!saved) return structuredClone(defaultData);
+  if(!saved) return defaults;
 
   try{
     const parsed = JSON.parse(saved);
+
     return {
-      ...structuredClone(defaultData),
+      ...defaults,
       ...parsed,
-      forms: Array.isArray(parsed.forms) && parsed.forms.length ? parsed.forms : structuredClone(defaultData.forms),
-      rewards: Array.isArray(parsed.rewards) && parsed.rewards.length ? parsed.rewards : structuredClone(defaultData.rewards),
+      forms: Array.isArray(parsed.forms) && parsed.forms.length ? parsed.forms : defaults.forms,
+      rewards: Array.isArray(parsed.rewards) && parsed.rewards.length ? parsed.rewards : defaults.rewards,
       logs: Array.isArray(parsed.logs) ? parsed.logs : [],
       todayChecks: parsed.todayChecks || {}
     };
   }catch{
-    return structuredClone(defaultData);
+    return defaults;
   }
 }
 
@@ -615,9 +624,14 @@ function saveData(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
+function getEl(id){
+  return document.getElementById(id);
+}
+
 function showPage(id){
   document.querySelectorAll(".page").forEach(page => page.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+  const page = getEl(id);
+  if(page) page.classList.add("active");
   render();
 }
 
@@ -650,7 +664,9 @@ function getExerciseList(form){
   if(!form || !form.exercises) return [];
 
   if(Array.isArray(form.exercises)){
-    return form.exercises.map(item => typeof item === "string" ? item : `${item.name || ""} ${item.details || ""}`.trim()).filter(Boolean);
+    return form.exercises
+      .map(item => typeof item === "string" ? item : `${item.name || ""} ${item.details || ""}`.trim())
+      .filter(Boolean);
   }
 
   return String(form.exercises)
@@ -692,7 +708,9 @@ function getRandomReward(){
 
   data.rewards.forEach(reward => {
     const weight = rarityWeights[reward.rarity] || 1;
-    for(let i = 0; i < weight; i++) pool.push(reward);
+    for(let i = 0; i < weight; i++){
+      pool.push(reward);
+    }
   });
 
   return pool[Math.floor(Math.random() * pool.length)];
@@ -737,7 +755,7 @@ function completeForm(id){
     : "No recovery rewards available.";
 
   data.logs.unshift({
-    id: crypto.randomUUID(),
+    id: uid(),
     formId: form.id,
     formName: form.name,
     formDay: form.day,
@@ -754,12 +772,12 @@ function completeForm(id){
 
 function saveForm(){
   const form = {
-    id: formId.value || crypto.randomUUID(),
-    day: Number(formDay.value),
-    name: formName.value.trim(),
-    exercises: formExercises.value.trim(),
-    benefits: formBenefits.value.trim(),
-    video: formVideo.value.trim()
+    id: getEl("formId").value || uid(),
+    day: Number(getEl("formDay").value),
+    name: getEl("formName").value.trim(),
+    exercises: getEl("formExercises").value.trim(),
+    benefits: getEl("formBenefits").value.trim(),
+    video: getEl("formVideo").value.trim()
   };
 
   if(!form.name || !form.exercises || !form.benefits || !form.video){
@@ -767,7 +785,7 @@ function saveForm(){
     return;
   }
 
-  if(formId.value){
+  if(getEl("formId").value){
     data.forms = data.forms.map(item => item.id === form.id ? form : item);
   }else{
     data.forms.push(form);
@@ -782,12 +800,12 @@ function editForm(id){
   const form = data.forms.find(item => item.id === id);
   if(!form) return;
 
-  formId.value = form.id;
-  formDay.value = form.day || 1;
-  formName.value = form.name || "";
-  formExercises.value = getExerciseList(form).join("\n");
-  formBenefits.value = form.benefits || "";
-  formVideo.value = form.video || "";
+  getEl("formId").value = form.id;
+  getEl("formDay").value = form.day || 1;
+  getEl("formName").value = form.name || "";
+  getEl("formExercises").value = getExerciseList(form).join("\n");
+  getEl("formBenefits").value = form.benefits || "";
+  getEl("formVideo").value = form.video || "";
 
   showPage("forms");
   scrollTo({top:0,behavior:"smooth"});
@@ -801,20 +819,20 @@ function deleteForm(id){
 }
 
 function clearForm(){
-  formId.value = "";
-  formDay.value = 1;
-  formName.value = "";
-  formExercises.value = "";
-  formBenefits.value = "";
-  formVideo.value = "";
+  getEl("formId").value = "";
+  getEl("formDay").value = 1;
+  getEl("formName").value = "";
+  getEl("formExercises").value = "";
+  getEl("formBenefits").value = "";
+  getEl("formVideo").value = "";
 }
 
 function saveReward(){
   const reward = {
-    id: rewardId.value || crypto.randomUUID(),
-    name: rewardName.value.trim(),
-    description: rewardDescription.value.trim(),
-    rarity: rewardRarity.value
+    id: getEl("rewardId").value || uid(),
+    name: getEl("rewardName").value.trim(),
+    description: getEl("rewardDescription").value.trim(),
+    rarity: getEl("rewardRarity").value
   };
 
   if(!reward.name || !reward.description){
@@ -822,7 +840,7 @@ function saveReward(){
     return;
   }
 
-  if(rewardId.value){
+  if(getEl("rewardId").value){
     data.rewards = data.rewards.map(item => item.id === reward.id ? reward : item);
   }else{
     data.rewards.push(reward);
@@ -837,10 +855,10 @@ function editReward(id){
   const reward = data.rewards.find(item => item.id === id);
   if(!reward) return;
 
-  rewardId.value = reward.id;
-  rewardName.value = reward.name;
-  rewardDescription.value = reward.description;
-  rewardRarity.value = reward.rarity;
+  getEl("rewardId").value = reward.id;
+  getEl("rewardName").value = reward.name;
+  getEl("rewardDescription").value = reward.description;
+  getEl("rewardRarity").value = reward.rarity;
 
   showPage("rewards");
   scrollTo({top:0,behavior:"smooth"});
@@ -854,10 +872,10 @@ function deleteReward(id){
 }
 
 function clearReward(){
-  rewardId.value = "";
-  rewardName.value = "";
-  rewardDescription.value = "";
-  rewardRarity.value = "common";
+  getEl("rewardId").value = "";
+  getEl("rewardName").value = "";
+  getEl("rewardDescription").value = "";
+  getEl("rewardRarity").value = "common";
 }
 
 function resetProgress(){
@@ -877,7 +895,7 @@ function resetProgress(){
 function factoryReset(){
   if(!confirm("Factory reset everything? This restores the default forms and rewards.")) return;
   localStorage.removeItem(STORAGE_KEY);
-  data = structuredClone(defaultData);
+  data = createDefaultData();
   saveData();
   render();
   showPage("home");
@@ -886,21 +904,21 @@ function factoryReset(){
 function renderHome(){
   const todayForm = getTodayForm();
 
-  homeStreak.textContent = data.streak;
-  homeSessions.textContent = data.sessions;
-  homeForms.textContent = data.forms.length;
-  homeLastTraining.textContent = data.lastTrainingDate || "None";
-  homeReward.textContent = data.latestReward || "Complete training to earn a reward.";
+  getEl("homeStreak").textContent = data.streak;
+  getEl("homeSessions").textContent = data.sessions;
+  getEl("homeForms").textContent = data.forms.length;
+  getEl("homeLastTraining").textContent = data.lastTrainingDate || "None";
+  getEl("homeReward").textContent = data.latestReward || "Complete training to earn a reward.";
 
   if(todayForm){
-    homeTodayName.textContent = todayForm.name;
-    homeTodayBenefits.textContent = todayForm.benefits;
+    getEl("homeTodayName").textContent = todayForm.name;
+    getEl("homeTodayBenefits").textContent = todayForm.benefits;
   }else{
-    homeTodayName.textContent = "No form available";
-    homeTodayBenefits.textContent = "Add a Blood Art Form to begin.";
+    getEl("homeTodayName").textContent = "No form available";
+    getEl("homeTodayBenefits").textContent = "Add a Blood Art Form to begin.";
   }
 
-  homeFormsList.innerHTML = data.forms.slice(0,4).map(form => `
+  getEl("homeFormsList").innerHTML = data.forms.slice(0,4).map(form => `
     <div class="exercise">
       <span class="badge day-badge">Day ${form.day}</span>
       <strong>${form.name}</strong>
@@ -908,7 +926,7 @@ function renderHome(){
     </div>
   `).join("");
 
-  homeLogList.innerHTML = data.logs.length ? data.logs.slice(0,4).map(log => `
+  getEl("homeLogList").innerHTML = data.logs.length ? data.logs.slice(0,4).map(log => `
     <div class="exercise">
       <strong>${log.formName}</strong><br>
       <span class="small">${log.date}</span>
@@ -921,13 +939,13 @@ function renderToday(){
   const form = getTodayForm();
 
   if(!form){
-    todayTitle.textContent = "No Training Available";
-    todayBenefits.textContent = "Add a Blood Art Form first.";
-    todayDay.textContent = "None";
-    todayVideo.href = "#";
-    todayChecklist.innerHTML = "";
-    completeTodayBtn.disabled = true;
-    checkProgressText.textContent = "";
+    getEl("todayTitle").textContent = "No Training Available";
+    getEl("todayBenefits").textContent = "Add a Blood Art Form first.";
+    getEl("todayDay").textContent = "None";
+    getEl("todayVideo").href = "#";
+    getEl("todayChecklist").innerHTML = "";
+    getEl("completeTodayBtn").disabled = true;
+    getEl("checkProgressText").textContent = "";
     return;
   }
 
@@ -936,12 +954,12 @@ function renderToday(){
   const completedCount = checks.filter(Boolean).length;
   const alreadyDone = data.logs.some(log => log.formId === form.id && log.date === todayKey());
 
-  todayTitle.textContent = form.name;
-  todayBenefits.textContent = form.benefits;
-  todayDay.textContent = `Day ${form.day}`;
-  todayVideo.href = form.video;
+  getEl("todayTitle").textContent = form.name;
+  getEl("todayBenefits").textContent = form.benefits;
+  getEl("todayDay").textContent = `Day ${form.day}`;
+  getEl("todayVideo").href = form.video;
 
-  todayChecklist.innerHTML = exercises.map((exercise, index) => `
+  getEl("todayChecklist").innerHTML = exercises.map((exercise, index) => `
     <div class="exercise ${checks[index] ? "checked" : ""}">
       <label>
         <input 
@@ -955,13 +973,13 @@ function renderToday(){
     </div>
   `).join("");
 
-  completeTodayBtn.disabled = alreadyDone || completedCount < exercises.length;
-  completeTodayBtn.textContent = alreadyDone ? "Training Already Completed" : "Complete Training Form";
-  checkProgressText.textContent = `${completedCount}/${exercises.length} exercises checked.`;
+  getEl("completeTodayBtn").disabled = alreadyDone || completedCount < exercises.length;
+  getEl("completeTodayBtn").textContent = alreadyDone ? "Training Already Completed" : "Complete Training Form";
+  getEl("checkProgressText").textContent = `${completedCount}/${exercises.length} exercises checked.`;
 }
 
 function renderForms(){
-  formsList.innerHTML = data.forms.map(form => `
+  getEl("formsList").innerHTML = data.forms.map(form => `
     <div class="card">
       <span class="badge day-badge">Day ${form.day}</span>
       <h3>${form.name}</h3>
@@ -977,7 +995,7 @@ function renderForms(){
 }
 
 function renderRewards(){
-  rewardList.innerHTML = data.rewards.map(reward => `
+  getEl("rewardList").innerHTML = data.rewards.map(reward => `
     <div class="card">
       <span class="badge ${reward.rarity}">${reward.rarity.toUpperCase()}</span>
       <h3>${reward.name}</h3>
@@ -991,7 +1009,7 @@ function renderRewards(){
 }
 
 function renderLog(){
-  trainingLog.innerHTML = data.logs.length ? data.logs.map(log => `
+  getEl("trainingLog").innerHTML = data.logs.length ? data.logs.map(log => `
     <div class="exercise">
       <strong>${log.formName}</strong><br>
       <span class="small">Day ${log.formDay} | ${log.date}</span><br>
@@ -1020,7 +1038,6 @@ const motivationalQuotes = [
   { quote: "Progress is earned one rep at a time.", author: "Training System" },
   { quote: "Do not wait for confidence. Build it through action.", author: "Training System" },
   { quote: "You are not behind. You are building.", author: "Training System" },
-
   { quote: "A strong body starts with a stubborn mind.", author: "Training System" },
   { quote: "Win the day. Repeat tomorrow.", author: "Training System" },
   { quote: "The hardest set is the one you almost skipped.", author: "Training System" },
@@ -1031,7 +1048,6 @@ const motivationalQuotes = [
   { quote: "Your discipline is louder than your doubt.", author: "Training System" },
   { quote: "Do the work. Let the results speak later.", author: "Training System" },
   { quote: "Training is proof that you refused to quit.", author: "Training System" },
-
   { quote: "One completed session is better than ten imagined ones.", author: "Training System" },
   { quote: "Become the person who keeps promises to yourself.", author: "Training System" },
   { quote: "Effort compounds quietly.", author: "Training System" },
@@ -1042,7 +1058,6 @@ const motivationalQuotes = [
   { quote: "You are closer than you feel.", author: "Training System" },
   { quote: "Do not break the chain today.", author: "Training System" },
   { quote: "Train with focus. Recover with purpose.", author: "Training System" },
-
   { quote: "The first victory is showing up.", author: "Training System" },
   { quote: "Sweat is just proof of effort leaving evidence.", author: "Training System" },
   { quote: "Keep going until effort becomes instinct.", author: "Training System" },
@@ -1052,95 +1067,36 @@ const motivationalQuotes = [
   { quote: "The path is simple. The discipline is rare.", author: "Training System" },
   { quote: "You do not need to feel powerful to act powerful.", author: "Training System" },
   { quote: "Build the habit. The habit builds you.", author: "Training System" },
-  { quote: "Today’s effort becomes tomorrow’s strength.", author: "Training System" },
-
-  { quote: "Control the controllable: effort, form, consistency.", author: "Training System" },
-  { quote: "Your limits move when you do.", author: "Training System" },
-  { quote: "A missed day does not define you. Returning does.", author: "Training System" },
-  { quote: "Earn your recovery.", author: "Training System" },
-  { quote: "Your comfort zone is not your final form.", author: "Training System" },
-  { quote: "Strong people are built through repeated decisions.", author: "Training System" },
-  { quote: "Make today undeniable.", author: "Training System" },
-  { quote: "Discipline is self-respect in motion.", author: "Training System" },
-  { quote: "The version of you waiting ahead needs this session.", author: "Training System" },
-  { quote: "Train like your future depends on it.", author: "Training System" },
-
-  { quote: "The goal is not punishment. The goal is power.", author: "Training System" },
-  { quote: "Do not chase perfection. Chase completion.", author: "Training System" },
-  { quote: "You are allowed to be tired. You are not required to quit.", author: "Training System" },
-  { quote: "Every form completed is a promise kept.", author: "Training System" },
-  { quote: "The work works when you do.", author: "Training System" },
-  { quote: "You cannot fake consistency.", author: "Training System" },
-  { quote: "Keep your standard higher than your excuses.", author: "Training System" },
-  { quote: "The body adapts to what the mind repeats.", author: "Training System" },
-  { quote: "A focused session beats a distracted marathon.", author: "Training System" },
-  { quote: "Do it tired. Do it slow. Just do it.", author: "Training System" },
-
-  { quote: "Your discipline is your weapon.", author: "Training System" },
-  { quote: "The strongest version of you is not found. It is trained.", author: "Training System" },
-  { quote: "One day or day one. Choose again today.", author: "Training System" },
-  { quote: "You are building evidence that you can trust yourself.", author: "Training System" },
-  { quote: "There is power in finishing what you started.", author: "Training System" },
-  { quote: "The session does not need to be perfect to be valuable.", author: "Training System" },
-  { quote: "Make your habits harder to kill than your excuses.", author: "Training System" },
-  { quote: "Your effort today is an investment in confidence.", author: "Training System" },
-  { quote: "The path rewards those who return.", author: "Training System" },
-  { quote: "Your body hears every choice.", author: "Training System" },
-
-  { quote: "Mastery begins with repetition.", author: "Training System" },
-  { quote: "Push with patience.", author: "Training System" },
-  { quote: "The work you avoid is often the work you need.", author: "Training System" },
-  { quote: "You are not chasing easy. You are chasing better.", author: "Training System" },
-  { quote: "The fight is won before the workout starts.", author: "Training System" },
-  { quote: "Respect the process, especially when it is quiet.", author: "Training System" },
-  { quote: "Every day you train, quitting loses power.", author: "Training System" },
-  { quote: "Your pace is allowed to be slow. Your direction matters.", author: "Training System" },
-  { quote: "Do not negotiate with the weaker voice.", author: "Training System" },
-  { quote: "Effort is never invisible to your future self.", author: "Training System" },
-
-  { quote: "The strongest streak starts with one completed day.", author: "Training System" },
-  { quote: "Be loyal to your goals when your mood changes.", author: "Training System" },
-  { quote: "Form first. Ego last.", author: "Training System" },
-  { quote: "You are not starting over. You are continuing wiser.", author: "Training System" },
-  { quote: "The session you dread can become the session you are proud of.", author: "Training System" },
-  { quote: "Progress loves patience.", author: "Training System" },
-  { quote: "Today is another chance to prove your standard.", author: "Training System" },
-  { quote: "Train the body. Sharpen the mind.", author: "Training System" },
-  { quote: "Keep moving. Momentum is earned.", author: "Training System" },
-  { quote: "Every rep is a refusal to stay the same.", author: "Training System" },
-
-  { quote: "Your excuses are not stronger than your decision.", author: "Training System" },
-  { quote: "You become dangerous when you become consistent.", author: "Training System" },
-  { quote: "Focus turns effort into progress.", author: "Training System" },
-  { quote: "Do what you said you would do.", author: "Training System" },
-  { quote: "Strength is built in private and revealed over time.", author: "Training System" },
-  { quote: "Train today so tomorrow has proof.", author: "Training System" },
-  { quote: "The discipline you practice becomes the confidence you carry.", author: "Training System" },
-  { quote: "Finish the form. Claim the day.", author: "Training System" },
-  { quote: "Your future self is watching this choice.", author: "Training System" },
-  { quote: "Begin again, stronger than before.", author: "Training System" }
+  { quote: "Today’s effort becomes tomorrow’s strength.", author: "Training System" }
 ];
 
 let lastQuoteIndex = -1;
 
 function loadMotivationalQuote(){
-  const quoteBox = document.getElementById("dailyQuote");
-  const authorBox = document.getElementById("dailyQuoteAuthor");
+  const quoteBox = getEl("dailyQuote");
+  const authorBox = getEl("dailyQuoteAuthor");
 
-  if (!quoteBox || !authorBox) return;
+  if(!quoteBox || !authorBox) return;
 
   let newIndex;
 
-  do {
+  do{
     newIndex = Math.floor(Math.random() * motivationalQuotes.length);
-  } while (newIndex === lastQuoteIndex);
+  }while(newIndex === lastQuoteIndex && motivationalQuotes.length > 1);
 
   lastQuoteIndex = newIndex;
 
   const q = motivationalQuotes[newIndex];
 
-  quoteBox.textContent = `"${q.quote}"`;
-  authorBox.textContent = `— ${q.author}`;
+  quoteBox.style.opacity = "0";
+  authorBox.style.opacity = "0";
+
+  setTimeout(() => {
+    quoteBox.textContent = `"${q.quote}"`;
+    authorBox.textContent = `— ${q.author}`;
+    quoteBox.style.opacity = "1";
+    authorBox.style.opacity = "1";
+  }, 120);
 }
 
 if("serviceWorker" in navigator){
