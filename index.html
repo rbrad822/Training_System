@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Akaza Training System</title>
+
+<style>
+:root {
+  --panel:#0d1328;
+  --panel2:#111a3a;
+  --text:#eaf8ff;
+  --muted:#91a4c7;
+  --cyan:#00eaff;
+  --blue:#1f6fff;
+  --pink:#ff4da6;
+  --green:#38ff8b;
+  --accent:linear-gradient(90deg,var(--cyan),var(--blue),var(--pink));
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:
+    radial-gradient(circle at top left,rgba(0,234,255,.22),transparent 35%),
+    radial-gradient(circle at top right,rgba(255,77,166,.22),transparent 35%),
+    linear-gradient(135deg,#03040a,#070c20);
+  color:var(--text);
+  min-height:100vh;
+}
+header{text-align:center;padding:28px 15px 12px}
+h1{margin:0;text-transform:uppercase;text-shadow:0 0 20px var(--cyan)}
+.small,.muted{color:var(--muted)}
+nav{
+  position:sticky;top:0;z-index:10;
+  display:flex;justify-content:center;gap:10px;flex-wrap:wrap;
+  padding:12px;background:rgba(5,6,13,.9);backdrop-filter:blur(10px)
+}
+button{
+  border:0;border-radius:999px;padding:10px 14px;
+  background:var(--accent);color:white;font-weight:800;cursor:pointer
+}
+button:hover{opacity:.9}
+button:disabled{opacity:.35;cursor:not-allowed}
+button.danger{background:linear-gradient(90deg,#ff4d6d,#ff8fa3)}
+button.secondary{background:#182345;border:1px solid rgba(0,234,255,.3)}
+main{max-width:1150px;margin:auto;padding:18px}
+.page{display:none}.page.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:15px}
+.card{
+  background:linear-gradient(180deg,var(--panel2),var(--panel));
+  border:1px solid rgba(0,234,255,.28);
+  border-radius:18px;padding:16px;margin-bottom:15px;
+  box-shadow:0 0 25px rgba(0,234,255,.08)
+}
+.section-title{color:var(--cyan);text-transform:uppercase;letter-spacing:1px}
+.exercise{
+  background:#060a18;border:1px solid rgba(255,255,255,.1);
+  border-radius:12px;padding:11px;margin:10px 0
+}
+.exercise.checked{border-color:rgba(56,255,139,.65);background:rgba(56,255,139,.08)}
+.exercise label{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.exercise input[type="checkbox"]{width:auto;margin-top:4px;accent-color:var(--cyan)}
+a{color:var(--cyan)}
+input,textarea,select{
+  width:100%;padding:11px;border-radius:12px;border:1px solid rgba(0,234,255,.25);
+  background:#070b1a;color:var(--text);margin-top:5px
+}
+textarea{min-height:90px}
+label{display:block;margin-top:10px;color:var(--muted)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.stat{display:flex;justify-content:space-between;margin:9px 0;color:var(--muted)}
+.bar{height:14px;background:#050711;border-radius:99px;overflow:hidden}
+.bar-fill{height:100%;width:0%;background:var(--accent)}
+.rank{font-size:4rem;font-weight:900;color:var(--cyan);text-shadow:0 0 18px var(--cyan)}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;margin:3px;font-size:.8rem}
+.day-badge{background:rgba(0,234,255,.12);border:1px solid rgba(0,234,255,.4);color:var(--cyan)}
+.common{background:#334155}.rare{background:#1d4ed8}.epic{background:#7e22ce}.legendary{background:#ca8a04;color:#111}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>Akaza Training System</h1>
+  <p class="small">Discipline. Progress. Rewards.</p>
+</header>
+
+<nav>
+  <button onclick="showPage('home')">Home</button>
+  <button onclick="showTodayWorkoutPage()">Today’s Workout</button>
+  <button onclick="showPage('workouts')">Workouts</button>
+  <button onclick="showPage('rewards')">Rewards</button>
+  <button onclick="showPage('progress')">Progress</button>
+</nav>
+
+<main>
+<section id="home" class="page active">
+  <div class="grid">
+    <div class="card">
+      <h2 class="section-title">Hunter Profile</h2>
+      <div class="rank" id="rank">E</div>
+      <div class="stat"><span>Level</span><strong id="level">1</strong></div>
+      <div class="stat"><span>XP</span><strong><span id="xp">0</span>/<span id="nextXp">100</span></strong></div>
+      <div class="bar"><div class="bar-fill" id="xpBar"></div></div>
+      <div class="stat"><span>Current Streak</span><strong id="streak">0</strong></div>
+      <div class="stat"><span>Total Workouts</span><strong id="totalCompleted">0</strong></div>
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">Today’s Auto-Rotated Workout</h2>
+      <div id="todayWorkout"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">Latest Reward</h2>
+    <p id="latestReward" class="muted">Complete today’s workout to unlock a reward.</p>
+  </div>
+</section>
+
+<section id="todayPage" class="page">
+  <div class="card">
+    <h2 class="section-title" id="todayWorkoutTitle">Today’s Workout</h2>
+    <p id="todayWorkoutBenefits" class="muted"></p>
+    <p><strong>Assigned Day:</strong> <span id="todayWorkoutDay"></span></p>
+    <p><strong>XP:</strong> <span id="todayWorkoutXp"></span></p>
+    <a id="todayWorkoutVideo" href="#" target="_blank">Watch Proper Form Overview</a>
+  </div>
+
+  <div class="card">
+    <h2 class="section-title">Exercise Checklist</h2>
+    <div id="todayExerciseChecklist"></div>
+    <div class="actions">
+      <button id="completeTodayBtn" onclick="completeTodayWorkout()">Complete Checked Workout</button>
+      <button class="secondary" onclick="clearTodayChecks()">Clear Checks</button>
+    </div>
+    <p class="small" id="checkProgressText"></p>
+  </div>
+</section>
+
+<section id="workouts" class="page">
+  <div class="card">
+    <h2 class="section-title">Add / Edit Workout</h2>
+    <input id="workoutId" type="hidden">
+
+    <label>Assign to Day</label>
+    <select id="workoutDay">
+      <option value="1">Day 1</option>
+      <option value="2">Day 2</option>
+      <option value="3">Day 3</option>
+      <option value="4">Day 4</option>
+      <option value="5">Day 5</option>
+      <option value="6">Day 6</option>
+      <option value="7">Day 7</option>
+    </select>
+
+    <label>Workout Name</label>
+    <input id="workoutName">
+
+    <label>Exercises</label>
+    <textarea id="workoutExercises"></textarea>
+
+    <label>Benefits</label>
+    <textarea id="workoutBenefits"></textarea>
+
+    <label>Video Link</label>
+    <input id="workoutVideo">
+
+    <label>XP</label>
+    <input id="workoutXp" type="number" min="1" value="35">
+
+    <div class="actions">
+      <button onclick="saveWorkout()">Save Workout</button>
+      <button class="secondary" onclick="clearWorkoutForm()">Clear</button>
+    </div>
+  </div>
+
+  <h2 class="section-title">Workout Library</h2>
+  <div id="workoutList"></div>
+</section>
+
+<section id="rewards" class="page">
+  <div class="card">
+    <h2 class="section-title">Add / Edit Reward</h2>
+    <input id="rewardId" type="hidden">
+
+    <label>Reward Name</label>
+    <input id="rewardName">
+
+    <label>Description</label>
+    <textarea id="rewardDescription"></textarea>
+
+    <label>Rarity</label>
+    <select id="rewardRarity">
+      <option value="common">Common - 60%</option>
+      <option value="rare">Rare - 25%</option>
+      <option value="epic">Epic - 12%</option>
+      <option value="legendary">Legendary - 3%</option>
+    </select>
+
+    <div class="actions">
+      <button onclick="saveReward()">Save Reward</button>
+      <button class="secondary" onclick="clearRewardForm()">Clear</button>
+    </div>
+  </div>
+
+  <h2 class="section-title">Reward Pool</h2>
+  <div id="rewardList" class="grid"></div>
+</section>
+
+<section id="progress" class="page">
+  <div class="card">
+    <h2 class="section-title">Progress Log</h2>
+    <div id="progressLog"></div>
+    <div class="actions">
+      <button class="danger" onclick="resetProgress()">Reset Progress</button>
+      <button class="danger" onclick="factoryReset()">Factory Reset Everything</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<script>
+const STORAGE_KEY = "akazaTrainingSystem_v3";
+
+const rarityWeights = { common: 60, rare: 25, epic: 12, legendary: 3 };
+
+const defaultData = {
+  level: 1,
+  xp: 0,
+  completed: 0,
+  streak: 0,
+  lastCompletedDate: "",
+  latestReward: "",
+  logs: [],
+  todayChecks: {},
+  workouts: [
+    {
+      id: crypto.randomUUID(),
+      day: 1,
+      name: "Day 1 - Upper Body Strength + Core",
+      exercises:
+`Incline Push-ups - 3 sets | 8–12 reps | RPE 6–7
+Dumbbell Floor Press - 3 sets | 8–12 reps | RPE 6–7
+Resistance Band Rows / Machine Rows - 3 sets | 10–15 reps | RPE 6–7
+Dumbbell Shoulder Press Seated - 3 sets | 8–12 reps | RPE 6
+Dumbbell Lateral Raises - 2–3 sets | 12–15 reps | RPE 6
+Plank - 3 sets | 20–40 sec | RPE 6
+Dead Bug - 2–3 sets | 8–12 reps | RPE 6`,
+      benefits: "Upper body strength, shoulder stability, chest/triceps development, back strength, and core control with low joint stress.",
+      video: "https://www.youtube.com/results?search_query=upper+body+strength+core+low+joint+stress+workout",
+      xp: 40
+    },
+    {
+      id: crypto.randomUUID(),
+      day: 2,
+      name: "Day 2 - Lower Body Knee-Friendly + Conditioning",
+      exercises:
+`Box Squats - 3 sets | 8–12 reps | RPE 6
+Romanian Deadlifts - 3 sets | 8–12 reps | RPE 6–7
+Glute Bridges / Hip Thrusts - 3 sets | 10–15 reps | RPE 6–7
+Step-ups Low Height - 2–3 sets | 8–10 reps/leg | RPE 6
+Hamstring Curls - 2–3 sets | 10–15 reps | RPE 6
+Calf Raises - 3 sets | 10–15 reps | RPE 6
+Incline Walking / Bike / Elliptical - 15–25 min | steady pace`,
+      benefits: "Builds legs, glutes, hamstrings, calves, and conditioning while staying knee-friendly.",
+      video: "https://www.youtube.com/results?search_query=knee+friendly+lower+body+workout",
+      xp: 45
+    },
+    {
+      id: crypto.randomUUID(),
+      day: 3,
+      name: "Day 3 - Full Body + Spartan Prep",
+      exercises:
+`Assisted Pull-ups / Band Pull-downs - 3 sets | 6–10 reps | RPE 6–7
+Dumbbell Goblet Squat - 3 sets | 8–12 reps | RPE 6
+Farmer’s Carry - 3 rounds | 20–40 sec | RPE 6–7
+Dumbbell Rows - 3 sets | 8–12 reps | RPE 6–7
+Push-ups Progression - 3 sets | 6–10 reps | RPE 6–7
+Battle Ropes / Shadow Conditioning - 3 rounds | 20–30 sec | RPE 7
+Hanging Knee Raises / Captain’s Chair - 2–3 sets | 8–12 reps | RPE 6`,
+      benefits: "Full-body strength, grip, core, conditioning, and obstacle-race readiness.",
+      video: "https://www.youtube.com/results?search_query=full+body+functional+spartan+race+prep+workout",
+      xp: 50
+    }
+  ],
+  rewards: [
+    { id: crypto.randomUUID(), name: "Protein Shake", description: "Post-workout recovery drink.", rarity: "common" },
+    { id: crypto.randomUUID(), name: "New Playlist", description: "Build a new training playlist.", rarity: "common" },
+    { id: crypto.randomUUID(), name: "Healthy Takeout", description: "Get a solid meal after training.", rarity: "rare" },
+    { id: crypto.randomUUID(), name: "Gym Gear Upgrade", description: "Buy a small piece of fitness gear.", rarity: "epic" },
+    { id: crypto.randomUUID(), name: "Legendary Rest Day", description: "Full recovery day with zero guilt.", rarity: "legendary" }
+  ]
+};
+
+let data = loadData();
+
+function loadData(){
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (!saved) return structuredClone(defaultData);
+
+  try {
+    const parsed = JSON.parse(saved);
+    return {
+      ...structuredClone(defaultData),
+      ...parsed,
+      workouts: Array.isArray(parsed.workouts) && parsed.workouts.length ? parsed.workouts : structuredClone(defaultData.workouts),
+      rewards: Array.isArray(parsed.rewards) && parsed.rewards.length ? parsed.rewards : structuredClone(defaultData.rewards),
+      logs: Array.isArray(parsed.logs) ? parsed.logs : [],
+      todayChecks: parsed.todayChecks || {}
+    };
+  } catch {
+    return structuredClone(defaultData);
+  }
+}
+
+function saveData(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+}
+
+function showPage(id){
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  render();
+}
+
+function todayKey(){
+  return new Date().toISOString().slice(0,10);
+}
+
+function yesterdayKey(){
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  return d.toISOString().slice(0,10);
+}
+
+function getCurrentTrainingDay(){
+  const start = new Date(new Date().getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((new Date() - start) / 86400000);
+  return ((dayOfYear - 1) % 3) + 1;
+}
+
+function getTodayWorkout(){
+  const currentDay = getCurrentTrainingDay();
+  return data.workouts.find(w => Number(w.day) === currentDay) || data.workouts[0] || null;
+}
+
+function getExerciseList(workout){
+  if (!workout || !workout.exercises) return [];
+
+  if (Array.isArray(workout.exercises)) {
+    return workout.exercises.map(e => typeof e === "string" ? e : `${e.name || ""} ${e.details || ""}`.trim()).filter(Boolean);
+  }
+
+  return String(workout.exercises).split("\n").map(x => x.trim()).filter(Boolean);
+}
+
+function getTodayCheckKey(){
+  const workout = getTodayWorkout();
+  return workout ? `${todayKey()}-${workout.id}` : todayKey();
+}
+
+function getTodayChecks(){
+  return data.todayChecks[getTodayCheckKey()] || [];
+}
+
+function setTodayChecks(checks){
+  data.todayChecks[getTodayCheckKey()] = checks;
+  saveData();
+}
+
+function showTodayWorkoutPage(){
+  showPage("todayPage");
+}
+
+function toggleExerciseCheck(index){
+  const checks = getTodayChecks();
+  checks[index] = !checks[index];
+  setTodayChecks(checks);
+  renderTodayPage();
+}
+
+function clearTodayChecks(){
+  setTodayChecks([]);
+  renderTodayPage();
+}
+
+function xpNeeded(){
+  return 100 + (data.level - 1) * 50;
+}
+
+function addXp(amount){
+  data.xp += Number(amount);
+  while(data.xp >= xpNeeded()){
+    data.xp -= xpNeeded();
+    data.level++;
+  }
+}
+
+function getRank(){
+  if(data.level >= 50) return "S";
+  if(data.level >= 35) return "A";
+  if(data.level >= 25) return "B";
+  if(data.level >= 15) return "C";
+  if(data.level >= 7) return "D";
+  return "E";
+}
+
+function getRandomReward(){
+  if (!data.rewards.length) return null;
+
+  const expanded = [];
+  data.rewards.forEach(reward => {
+    const weight = rarityWeights[reward.rarity] || 1;
+    for(let i = 0; i < weight; i++) expanded.push(reward);
+  });
+
+  return expanded[Math.floor(Math.random() * expanded.length)];
+}
+
+function completeTodayWorkout(){
+  const workout = getTodayWorkout();
+  if (!workout) return;
+
+  const exercises = getExerciseList(workout);
+  const checks = getTodayChecks();
+  const completedCount = checks.filter(Boolean).length;
+
+  if (completedCount < exercises.length) {
+    alert(`Finish all exercises first. ${completedCount}/${exercises.length} checked.`);
+    return;
+  }
+
+  completeWorkout(workout.id, true);
+}
+
+function completeWorkout(id, fromTodayPage = false){
+  const workout = data.workouts.find(w => w.id === id);
+  if (!workout) return;
+
+  const today = todayKey();
+  const alreadyDoneToday = data.logs.some(log => log.workoutId === id && log.date === today);
+
+  if (alreadyDoneToday) {
+    alert("You already completed this workout today.");
+    return;
+  }
+
+  data.streak = data.lastCompletedDate === yesterdayKey() ? data.streak + 1 : 1;
+  data.lastCompletedDate = today;
+  data.completed++;
+  addXp(workout.xp);
+
+  const reward = getRandomReward();
+
+  data.latestReward = reward
+    ? `${reward.name} [${reward.rarity.toUpperCase()}] - ${reward.description}`
+    : "No rewards available.";
+
+  data.logs.unshift({
+    id: crypto.randomUUID(),
+    workoutId: workout.id,
+    workoutName: workout.name,
+    workoutDay: workout.day,
+    date: today,
+    xp: workout.xp,
+    reward: data.latestReward,
+    checkedExercises: getExerciseList(workout)
+  });
+
+  saveData();
+  render();
+  alert(`Workout complete! Reward unlocked: ${data.latestReward}`);
+
+  if (fromTodayPage) showPage("progress");
+}
+
+function saveWorkout(){
+  const workout = {
+    id: workoutId.value || crypto.randomUUID(),
+    day: Number(workoutDay.value),
+    name: workoutName.value.trim(),
+    exercises: workoutExercises.value.trim(),
+    benefits: workoutBenefits.value.trim(),
+    video: workoutVideo.value.trim(),
+    xp: Number(workoutXp.value)
+  };
+
+  if(!workout.name || !workout.exercises || !workout.benefits || !workout.video || !workout.xp){
+    alert("Fill in all workout fields.");
+    return;
+  }
+
+  if(workoutId.value){
+    data.workouts = data.workouts.map(w => w.id === workout.id ? workout : w);
+  } else {
+    data.workouts.push(workout);
+  }
+
+  saveData();
+  clearWorkoutForm();
+  render();
+}
+
+function editWorkout(id){
+  const w = data.workouts.find(x => x.id === id);
+  if(!w) return;
+
+  workoutId.value = w.id;
+  workoutDay.value = w.day || 1;
+  workoutName.value = w.name || "";
+  workoutExercises.value = getExerciseList(w).join("\n");
+  workoutBenefits.value = w.benefits || "";
+  workoutVideo.value = w.video || "";
+  workoutXp.value = w.xp || 35;
+
+  showPage("workouts");
+  scrollTo({top:0,behavior:"smooth"});
+}
+
+function deleteWorkout(id){
+  if(!confirm("Delete this workout?")) return;
+  data.workouts = data.workouts.filter(w => w.id !== id);
+  saveData();
+  render();
+}
+
+function clearWorkoutForm(){
+  workoutId.value = "";
+  workoutDay.value = 1;
+  workoutName.value = "";
+  workoutExercises.value = "";
+  workoutBenefits.value = "";
+  workoutVideo.value = "";
+  workoutXp.value = 35;
+}
+
+function saveReward(){
+  const reward = {
+    id: rewardId.value || crypto.randomUUID(),
+    name: rewardName.value.trim(),
+    description: rewardDescription.value.trim(),
+    rarity: rewardRarity.value
+  };
+
+  if(!reward.name || !reward.description){
+    alert("Fill in all reward fields.");
+    return;
+  }
+
+  if(rewardId.value){
+    data.rewards = data.rewards.map(r => r.id === reward.id ? reward : r);
+  } else {
+    data.rewards.push(reward);
+  }
+
+  saveData();
+  clearRewardForm();
+  render();
+}
+
+function editReward(id){
+  const r = data.rewards.find(x => x.id === id);
+  if(!r) return;
+
+  rewardId.value = r.id;
+  rewardName.value = r.name;
+  rewardDescription.value = r.description;
+  rewardRarity.value = r.rarity;
+
+  showPage("rewards");
+  scrollTo({top:0,behavior:"smooth"});
+}
+
+function deleteReward(id){
+  if(!confirm("Delete this reward?")) return;
+  data.rewards = data.rewards.filter(r => r.id !== id);
+  saveData();
+  render();
+}
+
+function clearRewardForm(){
+  rewardId.value = "";
+  rewardName.value = "";
+  rewardDescription.value = "";
+  rewardRarity.value = "common";
+}
+
+function resetProgress(){
+  if(!confirm("Reset XP, streak, logs, and today’s checks? Workouts/rewards stay.")) return;
+  data.level = 1;
+  data.xp = 0;
+  data.completed = 0;
+  data.streak = 0;
+  data.lastCompletedDate = "";
+  data.latestReward = "";
+  data.logs = [];
+  data.todayChecks = {};
+  saveData();
+  render();
+}
+
+function factoryReset(){
+  if(!confirm("Factory reset everything? This restores default workouts and rewards.")) return;
+  localStorage.removeItem(STORAGE_KEY);
+  data = structuredClone(defaultData);
+  saveData();
+  render();
+  showPage("home");
+}
+
+function renderHome(){
+  rank.textContent = getRank();
+  level.textContent = data.level;
+  xp.textContent = data.xp;
+  nextXp.textContent = xpNeeded();
+  streak.textContent = data.streak;
+  totalCompleted.textContent = data.completed;
+  xpBar.style.width = `${Math.min((data.xp / xpNeeded()) * 100, 100)}%`;
+  latestReward.textContent = data.latestReward || "Complete today’s workout to unlock a reward.";
+
+  const w = getTodayWorkout();
+
+  todayWorkout.innerHTML = w ? `
+    <span class="badge day-badge">Day ${w.day}</span>
+    <h3>${w.name}</h3>
+    <p class="muted">${w.benefits}</p>
+    <p><strong>XP:</strong> ${w.xp}</p>
+    <a href="${w.video}" target="_blank">Watch Proper Form Overview</a>
+    <div class="actions">
+      <button onclick="showTodayWorkoutPage()">Open Workout Checklist</button>
+    </div>
+  ` : `<p class="muted">No workouts added yet.</p>`;
+}
+
+function renderTodayPage(){
+  const w = getTodayWorkout();
+
+  if (!w) {
+    todayWorkoutTitle.textContent = "No Workout Available";
+    todayWorkoutBenefits.textContent = "Add a workout first.";
+    todayWorkoutDay.textContent = "None";
+    todayWorkoutXp.textContent = "0";
+    todayExerciseChecklist.innerHTML = "";
+    completeTodayBtn.disabled = true;
+    checkProgressText.textContent = "";
+    return;
+  }
+
+  const exercises = getExerciseList(w);
+  const checks = getTodayChecks();
+  const completedCount = checks.filter(Boolean).length;
+  const alreadyDoneToday = data.logs.some(log => log.workoutId === w.id && log.date === todayKey());
+
+  todayWorkoutTitle.textContent = w.name;
+  todayWorkoutBenefits.textContent = w.benefits;
+  todayWorkoutDay.textContent = `Day ${w.day}`;
+  todayWorkoutXp.textContent = w.xp;
+  todayWorkoutVideo.href = w.video;
+
+  todayExerciseChecklist.innerHTML = exercises.map((exercise, index) => `
+    <div class="exercise ${checks[index] ? "checked" : ""}">
+      <label>
+        <input type="checkbox"
+          ${checks[index] ? "checked" : ""}
+          ${alreadyDoneToday ? "disabled" : ""}
+          onchange="toggleExerciseCheck(${index})">
+        <span>${exercise}</span>
+      </label>
+    </div>
+  `).join("");
+
+  completeTodayBtn.disabled = alreadyDoneToday || completedCount < exercises.length;
+  completeTodayBtn.textContent = alreadyDoneToday ? "Workout Already Completed" : "Complete Checked Workout";
+  checkProgressText.textContent = `${completedCount}/${exercises.length} exercises checked.`;
+}
+
+function renderWorkouts(){
+  workoutList.innerHTML = data.workouts.map(w => `
+    <div class="card">
+      <span class="badge day-badge">Day ${w.day || "Not Set"}</span>
+      <h3>${w.name}</h3>
+      <p class="muted">${w.benefits}</p>
+      <div class="exercise">${getExerciseList(w).join("<br>")}</div>
+      <p><strong>XP:</strong> ${w.xp}</p>
+      <a href="${w.video}" target="_blank">Watch Proper Form</a>
+      <div class="actions">
+        <button onclick="editWorkout('${w.id}')">Edit</button>
+        <button class="danger" onclick="deleteWorkout('${w.id}')">Delete</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderRewards(){
+  rewardList.innerHTML = data.rewards.map(r => `
+    <div class="card">
+      <span class="badge ${r.rarity}">${r.rarity.toUpperCase()}</span>
+      <h3>${r.name}</h3>
+      <p class="muted">${r.description}</p>
+      <div class="actions">
+        <button onclick="editReward('${r.id}')">Edit</button>
+        <button class="danger" onclick="deleteReward('${r.id}')">Delete</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderProgress(){
+  progressLog.innerHTML = data.logs.length ? data.logs.map(log => `
+    <div class="exercise">
+      <strong>${log.workoutName}</strong><br>
+      <span class="small">Day ${log.workoutDay} | ${log.date} | +${log.xp} XP</span><br>
+      <span>${log.reward}</span>
+      <p class="small"><strong>Completed Exercises:</strong><br>${log.checkedExercises.join("<br>")}</p>
+    </div>
+  `).join("") : `<p class="muted">No completed workouts yet.</p>`;
+}
+
+function render(){
+  renderHome();
+  renderTodayPage();
+  renderWorkouts();
+  renderRewards();
+  renderProgress();
+}
+
+saveData();
+render();
+</script>
+</body>
+</html>
