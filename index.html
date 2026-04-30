@@ -1009,43 +1009,130 @@ function render(){
   renderLog();
 }
 
-const fallbackQuotes = [
-  { quote: "Discipline is the bridge between goals and results.", author: "Jim Rohn" },
-  { quote: "Fall seven times, stand up eight.", author: "Japanese Proverb" },
-  { quote: "The pain you feel today will be the strength you feel tomorrow.", author: "Unknown" },
-  { quote: "A warrior is not built in comfort.", author: "Training System" },
-  { quote: "Small progress is still progress.", author: "Training System" }
+const motivationalQuotes = [
+  { quote: "Discipline turns effort into identity.", author: "Training System" },
+  { quote: "Show up before you feel ready.", author: "Training System" },
+  { quote: "Small steps still move you forward.", author: "Training System" },
+  { quote: "Consistency beats intensity when intensity disappears.", author: "Training System" },
+  { quote: "Your future body is built by today’s choices.", author: "Training System" },
+  { quote: "Train even when motivation is silent.", author: "Training System" },
+  { quote: "The session you complete matters more than the perfect plan.", author: "Training System" },
+  { quote: "Progress is earned one rep at a time.", author: "Training System" },
+  { quote: "Do not wait for confidence. Build it through action.", author: "Training System" },
+  { quote: "You are not behind. You are building.", author: "Training System" },
+
+  { quote: "A strong body starts with a stubborn mind.", author: "Training System" },
+  { quote: "Win the day. Repeat tomorrow.", author: "Training System" },
+  { quote: "The hardest set is the one you almost skipped.", author: "Training System" },
+  { quote: "Every workout is a vote for who you are becoming.", author: "Training System" },
+  { quote: "Strength grows where excuses end.", author: "Training System" },
+  { quote: "You do not need perfect energy. You need honest effort.", author: "Training System" },
+  { quote: "The mirror changes after the habits do.", author: "Training System" },
+  { quote: "Your discipline is louder than your doubt.", author: "Training System" },
+  { quote: "Do the work. Let the results speak later.", author: "Training System" },
+  { quote: "Training is proof that you refused to quit.", author: "Training System" },
+
+  { quote: "One completed session is better than ten imagined ones.", author: "Training System" },
+  { quote: "Become the person who keeps promises to yourself.", author: "Training System" },
+  { quote: "Effort compounds quietly.", author: "Training System" },
+  { quote: "Your streak is built in moments of resistance.", author: "Training System" },
+  { quote: "The body follows the standard you set.", author: "Training System" },
+  { quote: "Hard days count double.", author: "Training System" },
+  { quote: "Weak moments are where strong habits are forged.", author: "Training System" },
+  { quote: "You are closer than you feel.", author: "Training System" },
+  { quote: "Do not break the chain today.", author: "Training System" },
+  { quote: "Train with focus. Recover with purpose.", author: "Training System" },
+
+  { quote: "The first victory is showing up.", author: "Training System" },
+  { quote: "Sweat is just proof of effort leaving evidence.", author: "Training System" },
+  { quote: "Keep going until effort becomes instinct.", author: "Training System" },
+  { quote: "Your strongest form is built through repetition.", author: "Training System" },
+  { quote: "No wasted reps. No wasted days.", author: "Training System" },
+  { quote: "Every clean rep sharpens the blade.", author: "Training System" },
+  { quote: "The path is simple. The discipline is rare.", author: "Training System" },
+  { quote: "You do not need to feel powerful to act powerful.", author: "Training System" },
+  { quote: "Build the habit. The habit builds you.", author: "Training System" },
+  { quote: "Today’s effort becomes tomorrow’s strength.", author: "Training System" },
+
+  { quote: "Control the controllable: effort, form, consistency.", author: "Training System" },
+  { quote: "Your limits move when you do.", author: "Training System" },
+  { quote: "A missed day does not define you. Returning does.", author: "Training System" },
+  { quote: "Earn your recovery.", author: "Training System" },
+  { quote: "Your comfort zone is not your final form.", author: "Training System" },
+  { quote: "Strong people are built through repeated decisions.", author: "Training System" },
+  { quote: "Make today undeniable.", author: "Training System" },
+  { quote: "Discipline is self-respect in motion.", author: "Training System" },
+  { quote: "The version of you waiting ahead needs this session.", author: "Training System" },
+  { quote: "Train like your future depends on it.", author: "Training System" },
+
+  { quote: "The goal is not punishment. The goal is power.", author: "Training System" },
+  { quote: "Do not chase perfection. Chase completion.", author: "Training System" },
+  { quote: "You are allowed to be tired. You are not required to quit.", author: "Training System" },
+  { quote: "Every form completed is a promise kept.", author: "Training System" },
+  { quote: "The work works when you do.", author: "Training System" },
+  { quote: "You cannot fake consistency.", author: "Training System" },
+  { quote: "Keep your standard higher than your excuses.", author: "Training System" },
+  { quote: "The body adapts to what the mind repeats.", author: "Training System" },
+  { quote: "A focused session beats a distracted marathon.", author: "Training System" },
+  { quote: "Do it tired. Do it slow. Just do it.", author: "Training System" },
+
+  { quote: "Your discipline is your weapon.", author: "Training System" },
+  { quote: "The strongest version of you is not found. It is trained.", author: "Training System" },
+  { quote: "One day or day one. Choose again today.", author: "Training System" },
+  { quote: "You are building evidence that you can trust yourself.", author: "Training System" },
+  { quote: "There is power in finishing what you started.", author: "Training System" },
+  { quote: "The session does not need to be perfect to be valuable.", author: "Training System" },
+  { quote: "Make your habits harder to kill than your excuses.", author: "Training System" },
+  { quote: "Your effort today is an investment in confidence.", author: "Training System" },
+  { quote: "The path rewards those who return.", author: "Training System" },
+  { quote: "Your body hears every choice.", author: "Training System" },
+
+  { quote: "Mastery begins with repetition.", author: "Training System" },
+  { quote: "Push with patience.", author: "Training System" },
+  { quote: "The work you avoid is often the work you need.", author: "Training System" },
+  { quote: "You are not chasing easy. You are chasing better.", author: "Training System" },
+  { quote: "The fight is won before the workout starts.", author: "Training System" },
+  { quote: "Respect the process, especially when it is quiet.", author: "Training System" },
+  { quote: "Every day you train, quitting loses power.", author: "Training System" },
+  { quote: "Your pace is allowed to be slow. Your direction matters.", author: "Training System" },
+  { quote: "Do not negotiate with the weaker voice.", author: "Training System" },
+  { quote: "Effort is never invisible to your future self.", author: "Training System" },
+
+  { quote: "The strongest streak starts with one completed day.", author: "Training System" },
+  { quote: "Be loyal to your goals when your mood changes.", author: "Training System" },
+  { quote: "Form first. Ego last.", author: "Training System" },
+  { quote: "You are not starting over. You are continuing wiser.", author: "Training System" },
+  { quote: "The session you dread can become the session you are proud of.", author: "Training System" },
+  { quote: "Progress loves patience.", author: "Training System" },
+  { quote: "Today is another chance to prove your standard.", author: "Training System" },
+  { quote: "Train the body. Sharpen the mind.", author: "Training System" },
+  { quote: "Keep moving. Momentum is earned.", author: "Training System" },
+  { quote: "Every rep is a refusal to stay the same.", author: "Training System" },
+
+  { quote: "Your excuses are not stronger than your decision.", author: "Training System" },
+  { quote: "You become dangerous when you become consistent.", author: "Training System" },
+  { quote: "Focus turns effort into progress.", author: "Training System" },
+  { quote: "Do what you said you would do.", author: "Training System" },
+  { quote: "Strength is built in private and revealed over time.", author: "Training System" },
+  { quote: "Train today so tomorrow has proof.", author: "Training System" },
+  { quote: "The discipline you practice becomes the confidence you carry.", author: "Training System" },
+  { quote: "Finish the form. Claim the day.", author: "Training System" },
+  { quote: "Your future self is watching this choice.", author: "Training System" },
+  { quote: "Begin again, stronger than before.", author: "Training System" }
 ];
 
-async function loadMotivationalQuote(){
+function loadMotivationalQuote(){
   const quoteBox = document.getElementById("dailyQuote");
   const authorBox = document.getElementById("dailyQuoteAuthor");
 
   if (!quoteBox || !authorBox) return;
 
-  quoteBox.textContent = "Loading quote...";
-  authorBox.textContent = "";
+  const randomQuote = motivationalQuotes[
+    Math.floor(Math.random() * motivationalQuotes.length)
+  ];
 
-  try {
-    const res = await fetch("https://api.quotable.io/random");
-    const data = await res.json();
-
-    // 👉 ADD IT RIGHT HERE
-    localStorage.setItem("dailyQuote", JSON.stringify(data));
-
-    quoteBox.textContent = `"${data.content}"`;
-    authorBox.textContent = `— ${data.author}`;
-
-  } catch (err) {
-    const fallbackQuotes = [
-      { quote: "Discipline is the bridge between goals and results.", author: "Jim Rohn" },
-      { quote: "Fall seven times, stand up eight.", author: "Japanese Proverb" }
-    ];
-
-    const q = fallbackQuotes[Math.floor(Math.random() * fallbackQuotes.length)];
-    quoteBox.textContent = `"${q.quote}"`;
-    authorBox.textContent = `— ${q.author}`;
-  }
+  quoteBox.textContent = `"${randomQuote.quote}"`;
+  authorBox.textContent = `— ${randomQuote.author}`;
 }
 
 if("serviceWorker" in navigator){
