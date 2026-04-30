@@ -1121,18 +1121,26 @@ const motivationalQuotes = [
   { quote: "Begin again, stronger than before.", author: "Training System" }
 ];
 
+let lastQuoteIndex = -1;
+
 function loadMotivationalQuote(){
   const quoteBox = document.getElementById("dailyQuote");
   const authorBox = document.getElementById("dailyQuoteAuthor");
 
   if (!quoteBox || !authorBox) return;
 
-  const randomQuote = motivationalQuotes[
-    Math.floor(Math.random() * motivationalQuotes.length)
-  ];
+  let newIndex;
 
-  quoteBox.textContent = `"${randomQuote.quote}"`;
-  authorBox.textContent = `— ${randomQuote.author}`;
+  do {
+    newIndex = Math.floor(Math.random() * motivationalQuotes.length);
+  } while (newIndex === lastQuoteIndex);
+
+  lastQuoteIndex = newIndex;
+
+  const q = motivationalQuotes[newIndex];
+
+  quoteBox.textContent = `"${q.quote}"`;
+  authorBox.textContent = `— ${q.author}`;
 }
 
 if("serviceWorker" in navigator){
